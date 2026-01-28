@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Rabbit, Lock, Key, CheckCircle, ArrowRight, Instagram } from 'lucide-react';
+import { Rabbit, Lock, Key, CheckCircle, Instagram } from 'lucide-react';
 
 const App = () => {
   const [stage, setStage] = useState('portal'); // portal, code, form, confirmed
@@ -13,7 +13,6 @@ const App = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [loading, setLoading] = useState(false);
 
-  // Subtle mouse parallax effect
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({
@@ -44,7 +43,7 @@ const App = () => {
       }, 800);
     } else {
       setError(true);
-      setTimeout(() => setError(false), 500); // Reset shake
+      setTimeout(() => setError(false), 500);
     }
   };
 
@@ -60,16 +59,15 @@ const App = () => {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#e8e6e3] font-serif overflow-hidden relative selection:bg-amber-300/30">
       
-      {/* Vignette */}
-      <div className="fixed inset-0 pointer-events-none z-50" 
+      {/* BACKGROUND EFFECTS (Z-0) */}
+      <div className="fixed inset-0 pointer-events-none z-0" 
            style={{
              background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%)'
            }}>
       </div>
 
-      {/* Floating ambient elements */}
       <div 
-        className="fixed inset-0 pointer-events-none opacity-5"
+        className="fixed inset-0 pointer-events-none opacity-5 z-0"
         style={{
           transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
           transition: 'transform 0.3s ease-out'
@@ -79,16 +77,17 @@ const App = () => {
         <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-rose-400 rounded-full blur-[180px]"></div>
       </div>
 
-      <main className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-12">
+      {/* CONTENT (Z-50 - Guaranteed Clickable) */}
+      <main className="relative z-50 flex flex-col items-center justify-center min-h-screen px-6 py-12">
         
         {/* STAGE 1: THE PORTAL */}
         {stage === 'portal' && (
           <div className="text-center w-full max-w-4xl animate-[fadeIn_1.2s_ease-out]">
             
-            <div className="relative inline-block mb-16 scale-125">
+            <div className="relative inline-block mb-12 scale-110 md:scale-125">
               <div className="absolute inset-0 blur-3xl bg-amber-300/20 rounded-full scale-150"></div>
               <div className="relative bg-[#0a0a0a] border border-amber-300/20 rounded-full p-8 backdrop-blur-sm">
-                <Rabbit className="w-20 h-20 text-[#fcd34d]" strokeWidth={1.2} />
+                <Rabbit className="w-16 h-16 md:w-20 md:h-20 text-[#fcd34d]" strokeWidth={1.2} />
               </div>
             </div>
 
@@ -106,10 +105,10 @@ const App = () => {
               Please enter your invitation code.
             </p>
 
-            {/* NEW BUTTON STYLE: Solid borders, high contrast */}
+            {/* BUTTON FIX: Solid Color, No Transparency, High Z-Index */}
             <button 
               onClick={() => setStage('code')}
-              className="group relative inline-flex items-center gap-4 px-12 py-5 bg-transparent border-2 border-[#fcd34d] text-[#fcd34d] text-base md:text-lg uppercase tracking-[0.25em] font-sans font-bold transition-all duration-300 hover:bg-[#fcd34d] hover:text-black cursor-pointer"
+              className="group relative inline-flex items-center justify-center gap-4 px-12 py-5 bg-[#fcd34d] text-black text-base md:text-lg uppercase tracking-[0.25em] font-sans font-bold transition-transform duration-300 hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_20px_rgba(252,211,77,0.3)]"
             >
               <span>Enter Code</span>
               <Key className="w-5 h-5 group-hover:rotate-45 transition-transform duration-300" />
@@ -141,7 +140,7 @@ const App = () => {
                   value={accessCode}
                   onChange={handleCodeChange}
                   placeholder="ENTER CODE"
-                  className={`w-full bg-transparent border-b-2 ${error ? 'border-red-500 text-red-400 shake' : 'border-[#333] text-[#e8e6e3]'} pb-4 text-center text-4xl md:text-5xl placeholder-[#333] focus:outline-none focus:border-[#fcd34d] transition-all font-sans tracking-[0.2em] uppercase`}
+                  className={`w-full bg-transparent border-b-2 ${error ? 'border-red-500 text-red-400 shake' : 'border-[#333] text-[#fcd34d]'} pb-4 text-center text-4xl md:text-5xl placeholder-[#333] focus:outline-none focus:border-[#fcd34d] transition-all font-sans tracking-[0.2em] uppercase`}
                 />
                 {error && (
                   <p className="text-red-500 text-xs text-center uppercase tracking-widest animate-pulse">
@@ -153,7 +152,7 @@ const App = () => {
                <button 
                 type="submit" 
                 disabled={loading || !accessCode}
-                className="w-full mt-10 px-12 py-5 bg-transparent border-2 border-[#fcd34d] text-[#fcd34d] text-sm uppercase tracking-[0.3em] font-bold font-sans transition-all duration-300 hover:bg-[#fcd34d] hover:text-black disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-[#fcd34d]"
+                className="w-full mt-10 px-12 py-5 bg-[#fcd34d] text-black text-sm uppercase tracking-[0.3em] font-bold font-sans transition-all duration-300 hover:bg-white hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {loading ? 'Verifying...' : 'Unlock'}
               </button>
@@ -161,7 +160,7 @@ const App = () => {
             
             <button 
               onClick={() => setStage('portal')}
-              className="w-full mt-6 text-[#666] text-xs uppercase tracking-[0.2em] hover:text-[#999] transition-colors"
+              className="w-full mt-6 text-[#666] text-xs uppercase tracking-[0.2em] hover:text-[#999] transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -238,13 +237,13 @@ const App = () => {
               <button 
                 type="submit" 
                 disabled={loading}
-                className="w-full mt-16 px-12 py-5 bg-transparent border-2 border-[#fcd34d] text-[#fcd34d] text-sm uppercase tracking-[0.3em] font-bold font-sans transition-all duration-300 hover:bg-[#fcd34d] hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full mt-16 px-12 py-5 bg-[#fcd34d] text-black text-sm uppercase tracking-[0.3em] font-bold font-sans transition-all duration-300 hover:bg-white hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-[#fcd34d] rounded-full animate-pulse"></div>
-                    <div className="w-1.5 h-1.5 bg-[#fcd34d] rounded-full animate-pulse delay-100"></div>
-                    <div className="w-1.5 h-1.5 bg-[#fcd34d] rounded-full animate-pulse delay-200"></div>
+                    <div className="w-1.5 h-1.5 bg-black rounded-full animate-pulse"></div>
+                    <div className="w-1.5 h-1.5 bg-black rounded-full animate-pulse delay-100"></div>
+                    <div className="w-1.5 h-1.5 bg-black rounded-full animate-pulse delay-200"></div>
                   </span>
                 ) : 'Submit Request'}
               </button>
@@ -293,7 +292,7 @@ const App = () => {
         )}
       </main>
       
-      <div className="fixed bottom-8 left-8 text-xs text-[#333] uppercase tracking-[0.4em] font-sans">
+      <div className="fixed bottom-8 left-8 text-xs text-[#333] uppercase tracking-[0.4em] font-sans z-50">
         TSC — MMXXVI
       </div>
       
